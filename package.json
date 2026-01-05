@@ -1,0 +1,23 @@
+{
+  "name": "quiz-competition-app",
+  "version": "1.0.0",
+  "description": "A complete quiz competition web application",
+  "main": "server.js",
+  "scripts": {
+    "setup": "node setup.js",
+    "start": "node start.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "install-deps": "cd backend && npm install && cd ../frontend && npm install",
+    "seed": "cd backend && node seedData.js",
+    "seed-more": "cd backend && node utils/seedMoreQuestions.js",
+    "test-firebase": "cd backend && node test-firebase.js"
+  },
+  "keywords": ["quiz", "competition", "react", "nodejs", "mongodb"],
+  "author": "Quiz App Developer",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

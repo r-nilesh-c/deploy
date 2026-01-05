@@ -1,0 +1,310 @@
+import { collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { db } from "../firebase";
+
+/**
+ * Seed Firestore with quiz questions
+ * This script adds questions directly to Firestore from the frontend
+ */
+
+// Quiz questions in the format you specified - Mixed difficulty levels
+const quizQuestions = [
+  {
+    question: "What is a computer virus?",
+    options: [
+      "Hardware problem",
+      "A software program that harms a computer",
+      "An operating system",
+      "A network device"
+    ],
+    correctAnswer: "A software program that harms a computer"
+  },
+  {
+    question: "What does a password protect?",
+    options: [
+      "Monitor",
+      "Internet speed",
+      "User account",
+      "Keyboard"
+    ],
+    correctAnswer: "User account"
+  },
+  {
+    question: "Which device connects computers in a network?",
+    options: [
+      "Printer",
+      "Switch",
+      "Scanner",
+      "Monitor"
+    ],
+    correctAnswer: "Switch"
+  },
+  {
+    question: "What is the Internet?",
+    options: [
+      "Single computer",
+      "Collection of networks",
+      "Software",
+      "Virus"
+    ],
+    correctAnswer: "Collection of networks"
+  },
+  {
+    question: "What does Wi-Fi allow?",
+    options: [
+      "Wired connection",
+      "Wireless internet access",
+      "Virus protection",
+      "File deletion"
+    ],
+    correctAnswer: "Wireless internet access"
+  },
+  {
+    question: "What is a SQL injection attack?",
+    options: [
+      "Injecting medicine into databases",
+      "Inserting malicious code into database queries",
+      "Adding new SQL software",
+      "Updating database records"
+    ],
+    correctAnswer: "Inserting malicious code into database queries"
+  },
+  {
+    question: "What is hacking?",
+    options: [
+      "Fixing a computer",
+      "Unauthorized access to systems",
+      "Installing software",
+      "Updating OS"
+    ],
+    correctAnswer: "Unauthorized access to systems"
+  },
+  {
+    question: "What does DDoS stand for?",
+    options: [
+      "Direct Denial of Service",
+      "Distributed Denial of Service",
+      "Data Denial of Service",
+      "Dynamic Denial of Service"
+    ],
+    correctAnswer: "Distributed Denial of Service"
+  },
+  {
+    question: "What is an IP address?",
+    options: [
+      "Password",
+      "Network device",
+      "Unique address of a computer",
+      "Virus"
+    ],
+    correctAnswer: "Unique address of a computer"
+  },
+  {
+    question: "What does antivirus software do?",
+    options: [
+      "Increases internet speed",
+      "Removes viruses",
+      "Creates files",
+      "Connects networks"
+    ],
+    correctAnswer: "Removes viruses"
+  },
+  {
+    question: "Which one is an example of personal information?",
+    options: [
+      "Website name",
+      "Phone number",
+      "Browser",
+      "Search engine"
+    ],
+    correctAnswer: "Phone number"
+  },
+  {
+    question: "What is social engineering in cybersecurity?",
+    options: [
+      "Building social networks",
+      "Manipulating people to reveal confidential information",
+      "Engineering social media platforms",
+      "Creating social software"
+    ],
+    correctAnswer: "Manipulating people to reveal confidential information"
+  },
+  {
+    question: "What should you do before clicking a link?",
+    options: [
+      "Ignore it",
+      "Check the source",
+      "Share it",
+      "Download it"
+    ],
+    correctAnswer: "Check the source"
+  },
+  {
+    question: "What is email used for?",
+    options: [
+      "Playing games",
+      "Sending messages",
+      "Virus scanning",
+      "Network routing"
+    ],
+    correctAnswer: "Sending messages"
+  },
+  {
+    question: "What is a zero-day vulnerability?",
+    options: [
+      "A vulnerability that takes zero days to fix",
+      "A security flaw unknown to security vendors",
+      "A vulnerability that occurs on day zero",
+      "A harmless security issue"
+    ],
+    correctAnswer: "A security flaw unknown to security vendors"
+  },
+  {
+    question: "What is phishing?",
+    options: [
+      "Catching fish online",
+      "Fraudulent attempt to steal personal information",
+      "Network protocol",
+      "Computer hardware"
+    ],
+    correctAnswer: "Fraudulent attempt to steal personal information"
+  },
+  {
+    question: "What does HTTPS mean?",
+    options: [
+      "HyperText Transfer Protocol Secure",
+      "High Transfer Text Protocol",
+      "HyperText Transport Protocol",
+      "High Tech Transfer Protocol"
+    ],
+    correctAnswer: "HyperText Transfer Protocol Secure"
+  },
+  {
+    question: "What is ransomware?",
+    options: [
+      "Free software for everyone",
+      "Malware that encrypts files and demands payment",
+      "Antivirus protection software",
+      "Operating system update"
+    ],
+    correctAnswer: "Malware that encrypts files and demands payment"
+  },
+  {
+    question: "What is two-factor authentication?",
+    options: [
+      "Using two passwords",
+      "Additional security layer requiring two forms of verification",
+      "Two antivirus programs",
+      "Two computers"
+    ],
+    correctAnswer: "Additional security layer requiring two forms of verification"
+  },
+  {
+    question: "What should you do if you receive a suspicious email?",
+    options: [
+      "Open all attachments",
+      "Reply immediately",
+      "Delete it or report as spam",
+      "Forward to friends"
+    ],
+    correctAnswer: "Delete it or report as spam"
+  }
+];
+
+/**
+ * Clear all existing questions from Firestore
+ */
+export const clearQuestions = async () => {
+  try {
+    console.log('🗑️ Clearing existing questions...');
+    
+    const questionsRef = collection(db, 'questions');
+    const snapshot = await getDocs(questionsRef);
+    
+    const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+    
+    console.log(`✅ Cleared ${snapshot.size} existing questions`);
+    return snapshot.size;
+  } catch (error) {
+    console.error('❌ Error clearing questions:', error);
+    throw error;
+  }
+};
+
+/**
+ * Add questions to Firestore
+ */
+export const seedQuestions = async () => {
+  try {
+    console.log('🌱 Seeding cybersecurity questions to Firestore...');
+    
+    const questionsRef = collection(db, 'questions');
+    
+    // Define difficulty levels for each question
+    const difficultyLevels = [
+      'Easy', 'Easy', 'Easy', 'Easy', 'Easy',           // Questions 1-5: Easy
+      'Medium', 'Easy', 'Medium', 'Easy', 'Easy',       // Questions 6-10: Mixed
+      'Easy', 'Medium', 'Easy', 'Easy', 'Medium',       // Questions 11-15: Mixed  
+      'Easy', 'Easy', 'Medium', 'Easy', 'Easy'          // Questions 16-20: Mixed
+    ];
+    
+    const addPromises = quizQuestions.map((question, index) => addDoc(questionsRef, {
+      ...question,
+      category: 'Cybersecurity',
+      difficulty: difficultyLevels[index],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }));
+    
+    const results = await Promise.all(addPromises);
+    
+    console.log(`✅ Added ${results.length} cybersecurity questions to Firestore`);
+    console.log(`📊 Difficulty breakdown: 15 Easy + 5 Medium level questions`);
+    return results.length;
+  } catch (error) {
+    console.error('❌ Error seeding questions:', error);
+    throw error;
+  }
+};
+
+/**
+ * Full seeding process - clear and add questions
+ */
+export const seedFirestore = async () => {
+  try {
+    console.log('🔥 Starting Firestore seeding process...');
+    
+    // Clear existing questions
+    const clearedCount = await clearQuestions();
+    
+    // Add new questions
+    const addedCount = await seedQuestions();
+    
+    console.log('🎉 Firestore seeding completed successfully!');
+    console.log(`📊 Cleared: ${clearedCount} questions`);
+    console.log(`📊 Added: ${addedCount} questions`);
+    
+    return {
+      cleared: clearedCount,
+      added: addedCount,
+      success: true
+    };
+  } catch (error) {
+    console.error('💥 Firestore seeding failed:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get current question count
+ */
+export const getQuestionCount = async () => {
+  try {
+    const questionsRef = collection(db, 'questions');
+    const snapshot = await getDocs(questionsRef);
+    return snapshot.size;
+  } catch (error) {
+    console.error('❌ Error getting question count:', error);
+    throw error;
+  }
+};
