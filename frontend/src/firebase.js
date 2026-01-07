@@ -7,13 +7,13 @@ import { getAnalytics } from "firebase/analytics";
  * Your actual Firebase project configuration
  */
 const firebaseConfig = {
-  apiKey: "AIzaSyAmODQJfXIX2xglljfe5lfZ__S0ZhymzJ0",
-  authDomain: "cyber-hunt-quiz-155b5.firebaseapp.com",
-  projectId: "cyber-hunt-quiz-155b5",
-  storageBucket: "cyber-hunt-quiz-155b5.firebasestorage.app",
-  messagingSenderId: "667686251446",
-  appId: "1:667686251446:web:4809d5e30dae2e26822f17",
-  measurementId: "G-GQ7HMZWM6F"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -25,7 +25,7 @@ export const db = getFirestore(app);
 // Initialize Analytics (optional)
 export const analytics = getAnalytics(app);
 
-console.log('🔥 Firebase initialized for Cyber Hunt Quiz');
-console.log('📊 Project ID:', firebaseConfig.projectId);
+console.log("🔥 Firebase initialized for Cyber Hunt Quiz");
+console.log("📊 Project ID:", firebaseConfig.projectId);
 
 export default app;
